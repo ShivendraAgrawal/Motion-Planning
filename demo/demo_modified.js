@@ -158,7 +158,7 @@ GraphSearch.prototype.cellClicked = function($end) {
 	if (this.global_path) {
 		this.removeClass(this.global_path, 0);
 		var split_list = this.$prev_start_id.split("_");
-		this.grid[parseInt(split_list[1])][parseInt(split_list[2])].css("background-color", "transparent");
+		this.grid[parseInt(split_list[1])][parseInt(split_list[2])].removeClass(css.active);
 	}
 
     var end = this.nodeFromElement($end);
@@ -274,7 +274,7 @@ GraphSearch.prototype.animatePath = function(path) {
 	// console.log(this.$prev_start_id);
 	// console.log(this.$graph.find("#" + this.$prev_start_id));
 
-	this.grid[parseInt(split_list[1])][parseInt(split_list[2])].css("background-color", "#FF703F");
+	// this.grid[parseInt(split_list[1])][parseInt(split_list[2])].css("background-color", "#FF703F");
 	// this.$graph.find("#" + this.$prev_start_id).addClass(css.active);
 
     this.$graph.find("." + css.start).removeClass(css.start);
