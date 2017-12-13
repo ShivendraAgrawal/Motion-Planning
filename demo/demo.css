@@ -168,6 +168,9 @@ pre span.key {
 .grid_item.finish {
 
 }
+.grid_item.explored {
+  background-color: #62ff60;
+}
 #weightsKey {
   display: none;
 }

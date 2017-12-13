@@ -192,11 +192,13 @@ GraphSearch.prototype.drawDebugInfo = function(show) {
 			var node = that.nodeFromElement($(this));
 			var debug = false;
 			if (node.visited) {
-				debug = "F: " + node.f + "<br />G: " + node.g + "<br />H: " + node.h;
+				display_debug = node.f + "|" + node.g + "|" + node.h;
+				debug = "F: " + node.f + " G: " + node.g + " H: " + node.h;
 			}
 
 			if (debug) {
-				$(this).html(debug);
+				$(this).html(display_debug);
+				$(this).attr("title", debug);
 			}
 		});
 
@@ -220,23 +222,26 @@ GraphSearch.prototype.animatePath = function(path) {
 	var grid = this.grid;
 	var timeout = 1000 / grid.length;
 	var elementFromNode = function(node) {
+		console.log(node);
 		return grid[node.x][node.y];
 	};
 
-	var removeClass = function(path, i) {
-		if(i>=path.length) return;
-		elementFromNode(path[i]).removeClass(css.active);
-		setTimeout( function() { removeClass(path, i+1) }, timeout*path[i].cost);
-	};
+	// var removeClass = function(path, i) {
+	// 	if(i>=path.length) return;
+	// 	elementFromNode(path[i]).removeClass(css.active);
+	// 	setTimeout( function() { removeClass(path, i+1) }, timeout*path[i].cost);
+	// };
 	var addClass = function(path, i)  {
 		if(i>=path.length) {  // Finished showing path, now remove
-			return removeClass(path, 0);
+			// elementFromNode(path[0]).removeClass(css.active);
 		}
-		elementFromNode(path[i]).addClass(css.active);
-		setTimeout( function() { addClass(path, i+1) }, timeout*path[i].cost);
+		else{
+			elementFromNode(path[i]).addClass(css.active);
+			setTimeout( function() { addClass(path, i+1) }, timeout*path[i].cost);
+		}
 	};
 
-	addClass(path, 0)
+	addClass(path, 0);
 	this.$graph.find("." + css.start).removeClass(css.start);
 	this.$graph.find("." + css.finish).removeClass(css.finish).addClass(css.start);
 };

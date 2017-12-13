@@ -84,7 +84,7 @@ $(function() {
 
 });
 
-var css = { start: "start", finish: "finish", wall: "wall", active: "active" };
+var css = { start: "start", finish: "finish", wall: "wall", active: "active", explored: "explored"};
 
 function GraphSearch($graph, options, implementation) {
     this.$graph = $graph;
@@ -158,7 +158,7 @@ GraphSearch.prototype.cellClicked = function($end) {
 	if (this.global_path) {
 		this.removeClass(this.global_path, 0);
 		var split_list = this.$prev_start_id.split("_");
-		this.grid[parseInt(split_list[1])][parseInt(split_list[2])].removeClass(css.active);
+		// this.grid[parseInt(split_list[1])][parseInt(split_list[2])].removeClass(css.active);
 	}
 
     var end = this.nodeFromElement($end);
@@ -184,28 +184,44 @@ GraphSearch.prototype.cellClicked = function($end) {
 	}
 	else {
 	    $("#message").text("search took " + (fTime-sTime) + "ms.");
+		this.animatePath(path);
     	if(this.opts.debug) {
 	    	this.drawDebugInfo(this.opts.debug);
 	    }
-	    this.animatePath(path);
+
 	}
 };
 
 GraphSearch.prototype.drawDebugInfo = function(show) {
     this.$cells.html(" ");
+	this.$cells.removeClass(css.explored);
     var that = this;
     if(show) {
-    	that.$cells.each(function(i) { 
+    	that.$cells.each(function(i) {
+
             var node = that.nodeFromElement($(this));
     		var debug = false;
+			var display_debug = null;
             if (node.visited) {
 				display_debug = node.f + "|" + node.g + "|" + node.h;
                 debug = "F: " + node.f + " G: " + node.g + " H: " + node.h;
             }
+			else{
+				$(this).removeClass(css.explored);
+			}
 
     		if (debug) {
     			$(this).html(display_debug);
 				$(this).attr("title", debug);
+
+				if($(this).hasClass(css.active) == false){
+					// console.log("here");
+					$(this).addClass(css.explored);
+				}
+				else{
+					// console.log($(this).hasClass(css.active));
+					// console.log($(this));
+				}
     		}
     	});
 
@@ -274,7 +290,7 @@ GraphSearch.prototype.animatePath = function(path) {
 	// console.log(this.$prev_start_id);
 	// console.log(this.$graph.find("#" + this.$prev_start_id));
 
-	// this.grid[parseInt(split_list[1])][parseInt(split_list[2])].css("background-color", "#FF703F");
+	// this.grid[parseInt(split_list[1])][parseInt(split_list[2])].addClass(css.active);
 	// this.$graph.find("#" + this.$prev_start_id).addClass(css.active);
 
     this.$graph.find("." + css.start).removeClass(css.start);
