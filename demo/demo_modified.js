@@ -174,20 +174,20 @@ GraphSearch.prototype.cellClicked = function($end) {
    	var start = this.nodeFromElement($start);
 
 	var sTime = new Date();
-	this.graph.nodes = rrt.main(this.graph.nodes, 200, 4, start);
+	this.graph.nodes = rrt.main(this.graph.nodes, $('#samplePoints').val(), 4, start);
 
 	this.drawRRT(true);
 	
     var path = this.search(this.graph.nodes, start, end, this.opts.diagonal);
-	console.log(path);
+	console.log("Path = ", path);
 	var fTime = new Date();
 
 	if(!path || path.length == 0)	{
-	    $("#message").text("couldn't find a path ("+(fTime-sTime)+"ms)");
+	    $("#message").text("Result : Couldn't find a path ("+(fTime-sTime)+"ms)");
 	    this.animateNoPath();
 	}
 	else {
-	    $("#message").text("search took " + (fTime-sTime) + "ms.");
+	    $("#message").text("Result : Search took " + (fTime-sTime) + "ms.");
 		this.animatePath(path);
     	if(this.opts.debug) {
 	    	this.drawDebugInfo(this.opts.debug);
@@ -197,6 +197,7 @@ GraphSearch.prototype.cellClicked = function($end) {
 };
 
 GraphSearch.prototype.drawRRT = function(show) {
+	var counter = 0;
 	this.$cells.html(" ");
 	this.$cells.removeClass(css.sampled);
 	var that = this;
@@ -207,13 +208,14 @@ GraphSearch.prototype.drawRRT = function(show) {
 
 			if (node.sampled) {
 				$(this).addClass(css.sampled);
+				counter = counter + 1;
 			}
 			else{
 				$(this).removeClass(css.sampled);
 			}
 		});
-
 	}
+	console.log("Total nodes in the tree = ", counter);
 };
 
 GraphSearch.prototype.drawDebugInfo = function(show) {

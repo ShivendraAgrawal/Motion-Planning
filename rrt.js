@@ -113,7 +113,7 @@ var rrt = {
                 vertices.push(newNode);
             }
         }
-        // console.log(vertices);
+        console.log("Total vertices in RRT = ", vertices.length);
         // console.log(grid);
         return grid;
     }
