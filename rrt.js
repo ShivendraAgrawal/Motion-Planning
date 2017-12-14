@@ -99,7 +99,7 @@ var rrt = {
         var rand;
         for (i = 0; i < numNodes; i++) {
             rand = [Math.floor(Math.random()*grid.length), Math.floor(Math.random()*grid.length)];
-            console.log(rand);
+            // console.log(rand);
             nn = vertices[0];
 
             for (j = 0; j < vertices.length; j++) {
@@ -107,14 +107,14 @@ var rrt = {
                     nn = vertices[j];
                 }
             }
-            console.log(nn);
+            // console.log(nn);
             newNode = rrt.step_from_to(nn, rand);
             if(rrt.collisionDetector(grid, rand[0], rand[1], nn[0], nn[1]) == false){
                 vertices.push(newNode);
             }
         }
-        console.log(vertices);
-        console.log(grid);
+        // console.log(vertices);
+        // console.log(grid);
         return grid;
     }
 };

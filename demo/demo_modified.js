@@ -174,7 +174,7 @@ GraphSearch.prototype.cellClicked = function($end) {
    	var start = this.nodeFromElement($start);
 
 	var sTime = new Date();
-	this.graph.nodes = rrt.main(this.graph.nodes, 20, 5, start);
+	this.graph.nodes = rrt.main(this.graph.nodes, 200, 4, start);
 
 	this.drawRRT(true);
 	
