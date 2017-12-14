@@ -159,11 +159,11 @@ pre span.key {
 .grid_item.weight5 {
   background-color: #ABD1FF;
 }
-.grid_item.start {
-	background-color: #FF703F !important;
-}
 .grid_item.active {
 	background-color: #FF703F !important;
+}
+.grid_item.start {
+  background-color: #ff0c0c !important;
 }
 .grid_item.finish {
 
