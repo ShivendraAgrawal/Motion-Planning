@@ -50,4 +50,4 @@ var paths = function (x_rand, y_rand, x_nearest, y_nearest) {
     return path;
 };
 
-console.log(paths(2,3,0,0));
+console.log(paths(22,22,0,3));

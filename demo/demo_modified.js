@@ -84,7 +84,7 @@ $(function() {
 
 });
 
-var css = { start: "start", finish: "finish", wall: "wall", active: "active", explored: "explored"};
+var css = { start: "start", finish: "finish", wall: "wall", active: "active", explored: "explored", sampled:"sampled"};
 
 function GraphSearch($graph, options, implementation) {
     this.$graph = $graph;
@@ -174,6 +174,10 @@ GraphSearch.prototype.cellClicked = function($end) {
    	var start = this.nodeFromElement($start);
 
 	var sTime = new Date();
+	this.graph.nodes = rrt.main(this.graph.nodes, 20, 5, start);
+
+	this.drawRRT(true);
+	
     var path = this.search(this.graph.nodes, start, end, this.opts.diagonal);
 	console.log(path);
 	var fTime = new Date();
@@ -188,6 +192,26 @@ GraphSearch.prototype.cellClicked = function($end) {
     	if(this.opts.debug) {
 	    	this.drawDebugInfo(this.opts.debug);
 	    }
+
+	}
+};
+
+GraphSearch.prototype.drawRRT = function(show) {
+	this.$cells.html(" ");
+	this.$cells.removeClass(css.sampled);
+	var that = this;
+	if(show) {
+		that.$cells.each(function(i) {
+
+			var node = that.nodeFromElement($(this));
+
+			if (node.sampled) {
+				$(this).addClass(css.sampled);
+			}
+			else{
+				$(this).removeClass(css.sampled);
+			}
+		});
 
 	}
 };

@@ -160,16 +160,19 @@ pre span.key {
   background-color: #ABD1FF;
 }
 .grid_item.start {
-	background-color: #FF703F;
+	background-color: #FF703F !important;
 }
 .grid_item.active {
-	background-color: #FF703F;
+	background-color: #FF703F !important;
 }
 .grid_item.finish {
 
 }
 .grid_item.explored {
-  background-color: #62ff60;
+  background-color: #62ff60 !important;
+}
+.grid_item.sampled {
+  background-color: #1db9ff;
 }
 #weightsKey {
   display: none;
