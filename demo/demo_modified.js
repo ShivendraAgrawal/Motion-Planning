@@ -90,7 +90,7 @@ function GraphSearch($graph, options, implementation) {
     this.$graph = $graph;
     this.search = implementation;
     this.opts = $.extend({wallFrequency:.1, debug:true, gridSize:10}, options);
-    this.initialize();
+    this.initialize(); //this.custom_initialize() for custom initialization
 }
 GraphSearch.prototype.setOption = function(opt) {
     this.opts = $.extend(this.opts, opt);
@@ -153,6 +153,74 @@ GraphSearch.prototype.initialize = function() {
     this.$cells = $graph.find(".grid_item");
     this.$cells.click(function() { self.cellClicked($(this)) });
 };
+
+GraphSearch.prototype.custom_initialize = function() {
+
+	var self = this;
+	this.grid = [];
+	var nodes = [];
+	var $graph = this.$graph;
+
+	$graph.empty();
+
+	var cellWidth = ($graph.width()/this.opts.gridSize)-2;  // -2 for border
+	var cellHeight = ($graph.height()/this.opts.gridSize)-2;
+	var $cellTemplate = $("<span />").addClass("grid_item").width(cellWidth).height(cellHeight);
+	var startSet = false;
+
+	var wall1 = [];
+	for (var i = 15; i <= 25; i++) {
+		wall1.push(i);
+	}
+	var wall2 = wall1.map( function(value) {
+		return value - 5;
+	} );
+	var wall3 = wall1.map( function(value) {
+		return value + 5;
+	} );
+
+	for(var x=0;x<this.opts.gridSize;x++) {
+		var $row = $("<div class='clear' />");
+
+		var nodeRow = [];
+		var gridRow = [];
+
+		for(var y=0;y<this.opts.gridSize;y++) {
+			var id = "cell_"+x+"_"+y;
+			var $cell = $cellTemplate.clone();
+			$cell.attr("id", id).attr("x", x).attr("y", y);
+			$row.append($cell);
+			gridRow.push($cell);
+
+
+			if(($.inArray( x, wall1 ) != -1 && y == 20) || ($.inArray( x, wall2 ) != -1 && y == 10) || ($.inArray( x, wall3 ) != -1 && y == 30)) {
+				nodeRow.push(GraphNodeType.WALL);
+				$cell.addClass(css.wall);
+			}
+			else  {
+				var cell_weight = ($("#generateWeights").prop("checked") ? (Math.floor(Math.random() * 3)) * 2 + 1 : 1);
+				nodeRow.push(cell_weight);
+				$cell.addClass('weight' + cell_weight);
+				if ($("#displayWeights").prop("checked")) {$cell.html(cell_weight)}
+				if (!startSet) {
+					$cell.addClass(css.start);
+					startSet = true;
+				}
+			}
+		}
+		$graph.append($row);
+
+		this.grid.push(gridRow);
+		nodes.push(nodeRow);
+	}
+
+	this.graph = new Graph(nodes);
+
+	// bind cell event, set start/wall positions
+	this.$cells = $graph.find(".grid_item");
+	this.$cells.click(function() { self.cellClicked($(this)) });
+};
+
 GraphSearch.prototype.cellClicked = function($end) {
 
 	if (this.global_path) {
@@ -175,12 +243,19 @@ GraphSearch.prototype.cellClicked = function($end) {
 
 	var sTime = new Date();
 	this.graph.nodes = rrt.main(this.graph.nodes, $('#samplePoints').val(), 4, start);
-
-	this.drawRRT(true);
-	
-    var path = this.search(this.graph.nodes, start, end, this.opts.diagonal);
-	console.log("Path = ", path);
 	var fTime = new Date();
+	console.log("RRT building time = ", fTime - sTime);
+
+	sTime = new Date();
+	this.drawRRT(true);
+	fTime = new Date();
+	console.log("RRT draw time = ", fTime - sTime);
+
+	sTime = new Date();
+	var path = this.search(this.graph.nodes, start, end, this.opts.diagonal);
+	fTime = new Date();
+	console.log("Path = ", path);
+
 
 	if(!path || path.length == 0)	{
 	    $("#message").text("Result : Couldn't find a path ("+(fTime-sTime)+"ms)");
@@ -215,10 +290,11 @@ GraphSearch.prototype.drawRRT = function(show) {
 			}
 		});
 	}
-	console.log("Total nodes in the tree = ", counter);
+	console.log("Total nodes in the tree = ", counter, " ", counter/1600);
 };
 
 GraphSearch.prototype.drawDebugInfo = function(show) {
+	var counter = 0;
     this.$cells.html(" ");
 	this.$cells.removeClass(css.explored);
     var that = this;
@@ -229,6 +305,7 @@ GraphSearch.prototype.drawDebugInfo = function(show) {
     		var debug = false;
 			var display_debug = null;
             if (node.visited) {
+				counter = counter + 1;
 				display_debug = node.f + "|" + node.g + "|" + node.h;
                 debug = "F: " + node.f + " G: " + node.g + " H: " + node.h;
             }
@@ -250,8 +327,8 @@ GraphSearch.prototype.drawDebugInfo = function(show) {
 				}
     		}
     	});
-
     }
+	console.log("Total nodes explored = ", counter, " ", counter/1600);
 };
 GraphSearch.prototype.nodeFromElement = function($cell) {
     return this.graph.nodes[parseInt($cell.attr("x"))][parseInt($cell.attr("y"))];
